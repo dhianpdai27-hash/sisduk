@@ -10,13 +10,22 @@
     <style>
         body { background: #f8fafc; color: #1e293b; font-family: 'Inter', sans-serif; }
         .stat-card { background: white; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-left: 5px solid #1e3a8a; }
-        .tab-button.active { border-bottom: 4px solid #1e3a8a; color: #1e3a8a; font-weight: 800; }
+        /* Perbesar Font Menu Navigasi */
+        .tab-button { font-size: 14px !important; letter-spacing: 0.025em; }
+        .tab-button.active { border-bottom: 5px solid #1e3a8a; color: #1e3a8a; font-weight: 900; }
+        
         .modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.8); z-index: 1000; overflow-y: auto; padding: 15px; }
         .modal.active { display: flex; align-items: flex-start; justify-content: center; }
         .kk-box { background: white; border: 1px solid #e2e8f0; border-radius: 15px; margin-bottom: 1rem; overflow: hidden; }
-        input, select { border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px; width: 100%; font-size: 0.85rem; outline: none; margin-bottom: 5px; }
-        .label-text { display: block; font-size: 0.7rem; font-weight: 800; color: #64748b; margin: 5px 0 2px 2px; text-transform: uppercase; }
-        .list-item-stat { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #e2e8f0; font-size: 0.85rem; }
+        
+        /* Input lebih besar agar mudah dibaca */
+        input, select { border: 2px solid #cbd5e1; border-radius: 12px; padding: 12px; width: 100%; font-size: 1rem; outline: none; margin-bottom: 8px; color: #1e293b; }
+        input:focus { border-color: #1e3a8a; }
+        
+        /* Label lebih tegas */
+        .label-text { display: block; font-size: 0.85rem; font-weight: 800; color: #334155; margin: 8px 0 4px 4px; text-transform: uppercase; }
+        
+        .list-item-stat { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #e2e8f0; font-size: 1rem; }
         .hidden-module { display: none; }
         @media print { nav, .no-print, button, header { display: none !important; } .container { width: 100% !important; padding: 0 !important; } .stat-card { border: 1px solid #ccc !important; box-shadow: none !important; } }
     </style>
@@ -26,158 +35,178 @@
     <div id="login-screen">
         <div class="bg-white p-10 rounded-[2rem] shadow-2xl w-full max-w-sm mx-4 text-center mt-20">
             <h2 class="text-2xl font-black mb-6 uppercase text-blue-900">Admin Login</h2>
-            <input type="password" id="input-pass" placeholder="••••" class="mb-4 text-center text-3xl border-2 p-4 rounded-2xl w-full text-blue-900 font-black">
-            <button onclick="handleLogin()" class="w-full bg-blue-800 text-white py-4 rounded-2xl font-black shadow-lg">MASUK</button>
+            <input type="password" id="input-pass" placeholder="••••" class="mb-4 text-center text-4xl border-2 p-5 rounded-2xl w-full text-blue-900 font-black">
+            <button onclick="handleLogin()" class="w-full bg-blue-800 text-white py-5 rounded-2xl font-black shadow-lg text-xl">MASUK</button>
         </div>
     </div>
 
     <div id="app-content" class="hidden">
-        <header class="bg-blue-900 text-white px-6 py-8 shadow-xl text-center no-print">
-            <h1 class="text-2xl font-black uppercase tracking-tighter" id="head-dusun">Dusun Segono</h1>
-            <p class="text-[10px] opacity-75 mt-1" id="head-alamat">Memuat Alamat...</p>
+        <header class="bg-blue-900 text-white px-6 py-10 shadow-xl text-center no-print">
+            <h1 class="text-3xl font-black uppercase tracking-tighter" id="head-dusun">Dusun Segono</h1>
+            <p class="text-xs opacity-90 mt-2 font-medium" id="head-alamat">Memuat Alamat...</p>
         </header>
 
-        <nav class="bg-white shadow-md flex justify-around sticky top-0 z-50 no-print">
-            <button class="tab-button active py-5 px-4 text-[10px] font-black uppercase" data-tab="dashboard">Beranda</button>
-            <button class="tab-button py-5 px-4 text-[10px] font-black uppercase" data-tab="penduduk">Warga</button>
-            <button class="tab-button py-5 px-4 text-[10px] font-black uppercase" data-tab="pengaturan">Panel</button>
+        <nav class="bg-white shadow-md flex justify-around sticky top-0 z-50 no-print border-b-2">
+            <button class="tab-button active py-6 px-4 font-black uppercase" data-tab="dashboard">BERANDA</button>
+            <button class="tab-button py-6 px-4 font-black uppercase" data-tab="penduduk">WARGA</button>
+            <button class="tab-button py-6 px-4 font-black uppercase" data-tab="pengaturan">PANEL</button>
         </nav>
 
         <main class="container mx-auto p-4 pb-24">
             
             <div id="tab-dashboard" class="tab-content">
                 <div class="grid grid-cols-2 gap-4 mb-6">
-                    <div class="stat-card p-5"><p class="text-[9px] font-bold text-gray-400 uppercase">Warga Aktif</p><h3 id="st-total" class="text-3xl font-black text-blue-900">0</h3></div>
-                    <div class="stat-card p-5" style="border-left-color: #f97316;"><p class="text-[9px] font-bold text-gray-400 uppercase">Total KK</p><h3 id="st-kk" class="text-3xl font-black text-orange-600">0</h3></div>
-                    <div class="stat-card p-5" style="border-left-color: #10b981;"><p class="text-[9px] font-bold text-gray-400 uppercase">Laki-Laki</p><h3 id="st-laki" class="text-3xl font-black text-emerald-600">0</h3></div>
-                    <div class="stat-card p-5" style="border-left-color: #f43f5e;"><p class="text-[9px] font-bold text-gray-400 uppercase">Perempuan</p><h3 id="st-perempuan" class="text-3xl font-black text-rose-600">0</h3></div>
+                    <div class="stat-card p-6"><p class="text-[10px] font-black text-gray-500 uppercase mb-1">Warga Aktif</p><h3 id="st-total" class="text-4xl font-black text-blue-900">0</h3></div>
+                    <div class="stat-card p-6" style="border-left-color: #f97316;"><p class="text-[10px] font-black text-gray-500 uppercase mb-1">Total KK</p><h3 id="st-kk" class="text-4xl font-black text-orange-600">0</h3></div>
+                    <div class="stat-card p-6" style="border-left-color: #10b981;"><p class="text-[10px] font-black text-gray-500 uppercase mb-1">Laki-Laki</p><h3 id="st-laki" class="text-4xl font-black text-emerald-600">0</h3></div>
+                    <div class="stat-card p-6" style="border-left-color: #f43f5e;"><p class="text-[10px] font-black text-gray-500 uppercase mb-1">Perempuan</p><h3 id="st-perempuan" class="text-4xl font-black text-rose-600">0</h3></div>
                 </div>
 
-                <div id="box-mutasi" class="bg-white p-5 rounded-2xl shadow-sm border mb-4">
-                    <div class="flex justify-between items-center mb-4 border-b pb-2">
-                        <h2 class="text-blue-900 font-black text-[10px] uppercase">Laporan Mutasi Bulan Ini</h2>
-                        <button onclick="window.print()" class="text-[9px] font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded no-print">PRINT</button>
+                <div id="box-mutasi" class="bg-white p-6 rounded-2xl shadow-sm border mb-6">
+                    <div class="flex justify-between items-center mb-4 border-b-2 pb-3">
+                        <h2 class="text-blue-900 font-black text-xs uppercase">Laporan Mutasi Bulan Ini</h2>
+                        <button onclick="window.print()" class="text-xs font-black text-blue-700 bg-blue-100 px-4 py-2 rounded-lg no-print">PRINT DATA</button>
                     </div>
-                    <div class="grid grid-cols-3 gap-2 text-center font-black">
-                        <div><p class="text-[9px] text-blue-500 uppercase">Lahir</p><span id="mu-lahir">0</span></div>
-                        <div class="border-x"><p class="text-[9px] text-rose-500 uppercase">Mati</p><span id="mu-mati">0</span></div>
-                        <div><p class="text-[9px] text-orange-500 uppercase">Pindah</p><span id="mu-pindah">0</span></div>
+                    <div class="grid grid-cols-3 gap-2 text-center">
+                        <div><p class="text-[10px] font-black text-blue-500 uppercase">Lahir</p><span id="mu-lahir" class="text-2xl font-black">0</span></div>
+                        <div class="border-x-2"><p class="text-[10px] font-black text-rose-500 uppercase">Mati</p><span id="mu-mati" class="text-2xl font-black">0</span></div>
+                        <div><p class="text-[10px] font-black text-orange-500 uppercase">Pindah</p><span id="mu-pindah" class="text-2xl font-black">0</span></div>
                     </div>
                 </div>
 
-                <div id="box-pendidikan" class="bg-white p-5 rounded-2xl shadow-sm border mb-4 hidden-module">
-                    <h2 class="text-blue-900 font-black text-[10px] uppercase mb-4 border-b pb-1 font-bold">Pendidikan</h2>
+                <div id="box-pendidikan" class="bg-white p-6 rounded-2xl shadow-sm border mb-4 hidden-module">
+                    <h2 class="text-blue-900 font-black text-xs uppercase mb-4 border-b-2 pb-2">Data Pendidikan</h2>
                     <div id="list-edu" class="space-y-1"></div>
                 </div>
-                <div id="box-pekerjaan" class="bg-white p-5 rounded-2xl shadow-sm border mb-4 hidden-module">
-                    <h2 class="text-emerald-700 font-black text-[10px] uppercase mb-4 border-b pb-1 font-bold">Pekerjaan</h2>
+                <div id="box-pekerjaan" class="bg-white p-6 rounded-2xl shadow-sm border mb-4 hidden-module">
+                    <h2 class="text-emerald-700 font-black text-xs uppercase mb-4 border-b-2 pb-2">Data Pekerjaan</h2>
                     <div id="list-job" class="space-y-1"></div>
                 </div>
-                <div id="box-usia" class="bg-white p-5 rounded-2xl shadow-sm border mb-4 hidden-module">
-                    <h2 class="text-orange-700 font-black text-[10px] uppercase mb-4 border-b pb-1 font-bold">Kelompok Usia</h2>
+                <div id="box-usia" class="bg-white p-6 rounded-2xl shadow-sm border mb-4 hidden-module">
+                    <h2 class="text-orange-700 font-black text-xs uppercase mb-4 border-b-2 pb-2">Kelompok Usia</h2>
                     <div id="list-usia" class="space-y-1"></div>
                 </div>
-                <div id="box-agama" class="bg-white p-5 rounded-2xl shadow-sm border mb-4 hidden-module">
-                    <h2 class="text-purple-700 font-black text-[10px] uppercase mb-4 border-b pb-1 font-bold">Agama</h2>
+                <div id="box-agama" class="bg-white p-6 rounded-2xl shadow-sm border mb-4 hidden-module">
+                    <h2 class="text-purple-700 font-black text-xs uppercase mb-4 border-b-2 pb-2">Data Agama</h2>
                     <div id="list-agama" class="space-y-1"></div>
                 </div>
-                <div id="box-goldarah" class="bg-white p-5 rounded-2xl shadow-sm border mb-4 hidden-module">
-                    <h2 class="text-red-700 font-black text-[10px] uppercase mb-4 border-b pb-1 font-bold">Golongan Darah</h2>
+                <div id="box-goldarah" class="bg-white p-6 rounded-2xl shadow-sm border mb-4 hidden-module">
+                    <h2 class="text-red-700 font-black text-xs uppercase mb-4 border-b-2 pb-2">Golongan Darah</h2>
                     <div id="list-goldarah" class="space-y-1"></div>
                 </div>
 
-                <button onclick="openForm()" class="w-full bg-blue-800 text-white py-5 rounded-2xl font-black shadow-xl uppercase text-sm no-print">+ Tambah Warga Baru</button>
+                <button onclick="openForm()" class="w-full bg-blue-800 text-white py-6 rounded-2xl font-black shadow-xl uppercase text-lg no-print mt-4">+ Tambah Warga Baru</button>
             </div>
 
             <div id="tab-penduduk" class="tab-content hidden">
-                <div class="bg-white p-4 rounded-xl shadow-sm mb-4 no-print">
-                    <input type="text" id="cari" placeholder="Cari Nama/NIK/No. KK..." onkeyup="render()">
-                    <div class="grid grid-cols-2 gap-2 mt-2">
-                        <input type="text" id="filter-rt" placeholder="RT" onkeyup="render()">
-                        <input type="text" id="filter-rw" placeholder="RW" onkeyup="render()">
+                <div class="bg-white p-5 rounded-2xl shadow-sm mb-6 no-print border-2">
+                    <label class="label-text">Pencarian Cepat</label>
+                    <input type="text" id="cari" placeholder="Ketik Nama / NIK / No. KK..." onkeyup="render()" class="mb-4">
+                    <div class="grid grid-cols-2 gap-4 mt-2">
+                        <div>
+                            <label class="label-text">Filter RT</label>
+                            <input type="text" id="filter-rt" placeholder="RT" onkeyup="render()">
+                        </div>
+                        <div>
+                            <label class="label-text">Filter RW</label>
+                            <input type="text" id="filter-rw" placeholder="RW" onkeyup="render()">
+                        </div>
                     </div>
                 </div>
                 <div id="list-kk"></div>
             </div>
 
             <div id="tab-pengaturan" class="tab-content hidden">
-                <div class="bg-white p-6 rounded-2xl border mb-6 no-print">
-                    <h2 class="font-black mb-4 text-blue-900 uppercase text-xs">Identitas & Wilayah</h2>
-                    <input type="text" id="set-dusun" placeholder="Dusun">
-                    <input type="text" id="set-desa" placeholder="Desa">
-                    <input type="text" id="set-kec" placeholder="Kecamatan">
-                    <input type="text" id="set-kab" placeholder="Kabupaten">
-                    <input type="text" id="set-prov" placeholder="Provinsi">
-                    <input type="text" id="set-pass" placeholder="Password Admin">
-                    <button onclick="saveSettings()" class="w-full bg-blue-800 text-white py-3 rounded-xl font-bold uppercase text-[10px] mt-2">Simpan Pengaturan</button>
+                <div class="bg-white p-6 rounded-2xl border-2 mb-6 no-print">
+                    <h2 class="font-black mb-5 text-blue-900 uppercase text-sm border-b-2 pb-2">Identitas Wilayah</h2>
+                    <div class="grid grid-cols-1 gap-1">
+                        <label class="label-text">Nama Dusun</label><input type="text" id="set-dusun">
+                        <label class="label-text">Nama Desa</label><input type="text" id="set-desa">
+                        <label class="label-text">Kecamatan</label><input type="text" id="set-kec">
+                        <label class="label-text">Kabupaten</label><input type="text" id="set-kab">
+                        <label class="label-text">Provinsi</label><input type="text" id="set-prov">
+                        <label class="label-text">Password Admin (Baru)</label><input type="text" id="set-pass">
+                    </div>
+                    <button onclick="saveSettings()" class="w-full bg-blue-800 text-white py-5 rounded-xl font-black uppercase text-sm mt-6 shadow-md">Simpan Perubahan</button>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl border mb-6 no-print">
-                    <h2 class="font-black mb-4 text-blue-900 uppercase text-xs">Pilihan Dashboard</h2>
-                    <div class="grid grid-cols-1 gap-3">
-                        <label class="flex items-center gap-3 text-xs font-bold uppercase"><input type="checkbox" id="f-edu" onchange="toggleView()"> Pendidikan</label>
-                        <label class="flex items-center gap-3 text-xs font-bold uppercase"><input type="checkbox" id="f-job" onchange="toggleView()"> Pekerjaan</label>
-                        <label class="flex items-center gap-3 text-xs font-bold uppercase"><input type="checkbox" id="f-usia" onchange="toggleView()"> Usia</label>
-                        <label class="flex items-center gap-3 text-xs font-bold uppercase"><input type="checkbox" id="f-agama" onchange="toggleView()"> Agama</label>
-                        <label class="flex items-center gap-3 text-xs font-bold uppercase"><input type="checkbox" id="f-goldarah" onchange="toggleView()"> Golongan Darah</label>
+                <div class="bg-white p-6 rounded-2xl border-2 mb-6 no-print">
+                    <h2 class="font-black mb-5 text-blue-900 uppercase text-sm border-b-2 pb-2">Pilihan Tampilan Dashboard</h2>
+                    <div class="grid grid-cols-1 gap-4">
+                        <label class="flex items-center gap-4 text-sm font-black uppercase cursor-pointer bg-gray-50 p-4 rounded-xl">
+                            <input type="checkbox" id="f-edu" onchange="toggleView()" class="w-6 h-6"> Pendidikan
+                        </label>
+                        <label class="flex items-center gap-4 text-sm font-black uppercase cursor-pointer bg-gray-50 p-4 rounded-xl">
+                            <input type="checkbox" id="f-job" onchange="toggleView()" class="w-6 h-6"> Pekerjaan
+                        </label>
+                        <label class="flex items-center gap-4 text-sm font-black uppercase cursor-pointer bg-gray-50 p-4 rounded-xl">
+                            <input type="checkbox" id="f-usia" onchange="toggleView()" class="w-6 h-6"> Usia
+                        </label>
+                        <label class="flex items-center gap-4 text-sm font-black uppercase cursor-pointer bg-gray-50 p-4 rounded-xl">
+                            <input type="checkbox" id="f-agama" onchange="toggleView()" class="w-6 h-6"> Agama
+                        </label>
+                        <label class="flex items-center gap-4 text-sm font-black uppercase cursor-pointer bg-gray-50 p-4 rounded-xl">
+                            <input type="checkbox" id="f-goldarah" onchange="toggleView()" class="w-6 h-6"> Golongan Darah
+                        </label>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl border no-print space-y-3">
-                    <h2 class="font-black text-blue-900 uppercase text-xs mb-2 tracking-widest">Database (Excel)</h2>
-                    <button onclick="exportExcel()" class="w-full bg-emerald-700 text-white py-3 rounded-xl font-bold uppercase text-[10px]">Export Ke Excel</button>
-                    <button onclick="document.getElementById('importFile').click()" class="w-full bg-amber-600 text-white py-3 rounded-xl font-bold uppercase text-[10px]">Import Dari Excel</button>
+                <div class="bg-white p-6 rounded-2xl border-2 no-print space-y-4">
+                    <h2 class="font-black text-blue-900 uppercase text-sm mb-2 border-b-2 pb-2">Kelola Database (Excel)</h2>
+                    <button onclick="exportExcel()" class="w-full bg-emerald-700 text-white py-5 rounded-xl font-black uppercase text-sm shadow-md">Export Ke Excel</button>
+                    <button onclick="document.getElementById('importFile').click()" class="w-full bg-amber-600 text-white py-5 rounded-xl font-black uppercase text-sm shadow-md">Import Dari Excel</button>
                     <input type="file" id="importFile" class="hidden" accept=".xlsx, .xls" onchange="importExcel(event)">
-                    <button onclick="resetDB()" class="w-full bg-rose-50 text-rose-600 py-3 rounded-xl font-bold uppercase text-[10px]">Reset Seluruh Data</button>
+                    <button onclick="resetDB()" class="w-full bg-rose-50 text-rose-600 py-5 rounded-xl font-black uppercase text-sm border-2 border-rose-200">Reset Seluruh Data</button>
                 </div>
             </div>
         </main>
 
         <div id="modal-form" class="modal no-print">
             <div class="bg-white w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl my-4">
-                <div class="bg-blue-800 p-5 text-white flex justify-between items-center">
-                    <h2 id="modal-title" class="font-black uppercase text-xs">Entri Biodata Penduduk</h2>
-                    <button onclick="closeForm()" class="text-3xl">&times;</button>
+                <div class="bg-blue-800 p-6 text-white flex justify-between items-center">
+                    <h2 id="modal-title" class="font-black uppercase text-sm tracking-wider">Biodata Penduduk</h2>
+                    <button onclick="closeForm()" class="text-4xl font-bold">&times;</button>
                 </div>
-                <form id="form-data" class="p-6 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1 overflow-y-auto max-h-[80vh]">
+                <form id="form-data" class="p-8 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 overflow-y-auto max-h-[85vh]">
                     <input type="hidden" name="id" id="form-id">
-                    <div class="md:col-span-2 text-blue-800 font-black text-[10px] border-b-2 border-blue-50 pb-1 mb-2">I. DATA KARTU KELUARGA</div>
+                    <div class="md:col-span-2 text-blue-800 font-black text-xs border-b-4 border-blue-50 pb-2 mb-4 uppercase">I. Informasi Kartu Keluarga</div>
                     <div><label class="label-text">Nomor KK</label><input type="text" name="noKK" required></div>
-                    <div><label class="label-text">Nama Kepala Keluarga</label><input type="text" name="namaKepala" required></div>
+                    <div><label class="label-text">Kepala Keluarga</label><input type="text" name="namaKepala" required></div>
                     <div class="md:col-span-2"><label class="label-text">Alamat Lengkap</label><input type="text" name="alamat" required></div>
-                    <div class="grid grid-cols-2 gap-2 md:col-span-2">
+                    <div class="grid grid-cols-2 gap-4 md:col-span-2">
                         <div><label class="label-text">RT</label><input type="text" name="rt" required></div>
                         <div><label class="label-text">RW</label><input type="text" name="rw" required></div>
                     </div>
-                    <div class="md:col-span-2 text-blue-800 font-black text-[10px] border-b-2 border-blue-50 pb-1 mt-4 mb-2 uppercase">II. DATA INDIVIDU</div>
-                    <div><label class="label-text">NIK</label><input type="text" name="nik" required></div>
+                    <div class="md:col-span-2 text-blue-800 font-black text-xs border-b-4 border-blue-50 pb-2 mt-6 mb-4 uppercase">II. Biodata Perorangan</div>
+                    <div><label class="label-text">NIK (Sesuai KTP)</label><input type="text" name="nik" required></div>
                     <div><label class="label-text">Nama Lengkap</label><input type="text" name="nama" required></div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div><label class="label-text">Jenis Kelamin</label><select name="jk"><option value="L">Laki-Laki</option><option value="P">Perempuan</option></select></div>
-                        <div><label class="label-text">Hubungan Keluarga</label><input type="text" name="hubungan"></div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="label-text">Jenis Kelamin</label><select name="jk" class="h-[52px]"><option value="L">Laki-Laki</option><option value="P">Perempuan</option></select></div>
+                        <div><label class="label-text">Hubungan Kel.</label><input type="text" name="hubungan"></div>
                     </div>
-                    <div class="grid grid-cols-2 gap-2">
+                    <div class="grid grid-cols-2 gap-4">
                         <div><label class="label-text">Tempat Lahir</label><input type="text" name="tempatLahir"></div>
-                        <div><label class="label-text">Tanggal Lahir</label><input type="date" name="tglLahir"></div>
+                        <div><label class="label-text">Tanggal Lahir</label><input type="date" name="tglLahir" class="h-[52px]"></div>
                     </div>
-                    <div><label class="label-text">Agama</label><select name="agama"><option>Islam</option><option>Kristen</option><option>Katolik</option><option>Hindu</option><option>Budha</option><option>Lainnya</option></select></div>
-                    <div><label class="label-text">Status Kawin</label><select name="statusKawin"><option>Belum Kawin</option><option>Kawin</option><option>Cerai Hidup</option><option>Cerai Mati</option></select></div>
+                    <div><label class="label-text">Agama</label><select name="agama" class="h-[52px]"><option>Islam</option><option>Kristen</option><option>Katolik</option><option>Hindu</option><option>Budha</option><option>Lainnya</option></select></div>
+                    <div><label class="label-text">Status Kawin</label><select name="statusKawin" class="h-[52px]"><option>Belum Kawin</option><option>Kawin</option><option>Cerai Hidup</option><option>Cerai Mati</option></select></div>
                     <div><label class="label-text">Pendidikan</label><input type="text" name="pendidikan"></div>
                     <div><label class="label-text">Pekerjaan</label><input type="text" name="pekerjaan"></div>
                     <div><label class="label-text">Gol. Darah</label><input type="text" name="goldarah" placeholder="-"></div>
-                    <div><label class="label-text">Status Keberadaan</label><select name="status"><option value="HIDUP">HIDUP</option><option value="LAHIR">LAHIR</option><option value="MENINGGAL">MENINGGAL</option><option value="PINDAH">PINDAH</option></select></div>
-                    <div class="grid grid-cols-2 gap-2 md:col-span-2">
-                        <div><label class="label-text">Ayah</label><input type="text" name="ayah"></div>
-                        <div><label class="label-text">Ibu</label><input type="text" name="ibu"></div>
+                    <div><label class="label-text">Kondisi Warga</label><select name="status" class="h-[52px]"><option value="HIDUP">HIDUP</option><option value="LAHIR">LAHIR</option><option value="MENINGGAL">MENINGGAL</option><option value="PINDAH">PINDAH</option></select></div>
+                    <div class="grid grid-cols-2 gap-4 md:col-span-2">
+                        <div><label class="label-text">Nama Ayah</label><input type="text" name="ayah"></div>
+                        <div><label class="label-text">Nama Ibu</label><input type="text" name="ibu"></div>
                     </div>
                     <input type="hidden" name="tglUpdate" id="tglUpdate">
-                    <button type="submit" class="md:col-span-2 w-full bg-blue-800 text-white py-4 rounded-xl font-black uppercase shadow-lg mt-6">Simpan Perubahan</button>
+                    <button type="submit" class="md:col-span-2 w-full bg-blue-800 text-white py-6 rounded-2xl font-black uppercase shadow-xl mt-8 text-lg">Simpan Data</button>
                 </form>
             </div>
         </div>
     </div>
 
     <script>
+        // Logika JavaScript tetap sama seperti versi asli Anda agar fitur tidak berubah
         let db = JSON.parse(localStorage.getItem('segono_db')) || [];
         let config = JSON.parse(localStorage.getItem('segono_cfg')) || { pass: "1234", dusun: "Segono", desa: "Desa", kec:"Kecamatan", kab:"Kabupaten", prov: "Provinsi", show: ["f-edu"] };
 
@@ -296,16 +325,16 @@
             list.innerHTML = '';
             for(let kk in groups) {
                 const h = groups[kk][0];
-                list.innerHTML += `<div class="kk-box shadow-sm">
-                    <div class="bg-blue-50 p-4 border-b flex justify-between items-center text-[10px] font-black uppercase text-blue-900">
+                list.innerHTML += `<div class="kk-box shadow-sm border-2">
+                    <div class="bg-blue-50 p-5 border-b-2 flex justify-between items-center text-xs font-black uppercase text-blue-900">
                         <span>🏠 ${h.namaKepala} (RT ${h.rt}/RW ${h.rw})</span>
-                        <button onclick="editWarga('${h.id}')" class="text-blue-600 no-print font-bold">EDIT</button>
+                        <button onclick="editWarga('${h.id}')" class="text-blue-600 no-print font-black">EDIT KK</button>
                     </div>
-                    <div class="p-1">${groups[kk].map(m => `<div class="flex justify-between items-center p-3 border-b last:border-0 text-xs">
-                        <span><b>${m.nama}</b> <small class="text-gray-400">(${m.hubungan})</small></span>
-                        <div class="flex gap-4 no-print">
-                            <button onclick="editWarga('${m.id}')" class="text-blue-500 font-bold">✏️</button>
-                            <button onclick="mutasiIndividu('${m.id}')" class="text-gray-300 font-bold">⚙️</button>
+                    <div class="p-1">${groups[kk].map(m => `<div class="flex justify-between items-center p-4 border-b last:border-0 text-sm">
+                        <span><b class="text-base">${m.nama}</b> <br> <small class="text-gray-500 font-bold uppercase text-[10px]">${m.hubungan}</small></span>
+                        <div class="flex gap-6 no-print">
+                            <button onclick="editWarga('${m.id}')" class="text-blue-500 font-bold text-xl">✏️</button>
+                            <button onclick="mutasiIndividu('${m.id}')" class="text-gray-400 font-bold text-xl">⚙️</button>
                         </div>
                     </div>`).join('')}</div>
                 </div>`;
@@ -313,7 +342,7 @@
         }
 
         async function mutasiIndividu(id) {
-            const { value: s } = await Swal.fire({ title: 'Mutasi', input: 'select', inputOptions: { 'HIDUP':'Hidup', 'MENINGGAL':'Meninggal', 'PINDAH':'Pindah' }, showCancelButton: true });
+            const { value: s } = await Swal.fire({ title: 'Status Mutasi', input: 'select', inputOptions: { 'HIDUP':'Tetap Hidup', 'MENINGGAL':'Meninggal Dunia', 'PINDAH':'Pindah Alamat' }, showCancelButton: true });
             if (s) { const i = db.findIndex(x => x.id == id); db[i].status = s; db[i].tglUpdate = new Date().toISOString().split('T')[0]; localStorage.setItem('segono_db', JSON.stringify(db)); render(); }
         }
 
@@ -322,12 +351,12 @@
             if(data) {
                 const form = document.getElementById('form-data');
                 for (let key in data) { if(form.elements[key]) form.elements[key].value = data[key]; }
-                document.getElementById('modal-title').innerText = "Edit Biodata";
+                document.getElementById('modal-title').innerText = "Edit Data Penduduk";
                 document.getElementById('modal-form').classList.add('active');
             }
         }
 
-        function openForm() { document.getElementById('modal-title').innerText = "Entri Biodata Lengkap"; document.getElementById('form-id').value = ""; document.getElementById('modal-form').classList.add('active'); }
+        function openForm() { document.getElementById('modal-title').innerText = "Tambah Warga Baru"; document.getElementById('form-id').value = ""; document.getElementById('modal-form').classList.add('active'); }
         function closeForm() { document.getElementById('modal-form').classList.remove('active'); document.getElementById('form-data').reset(); }
         
         function exportExcel() { 
@@ -337,7 +366,6 @@
             XLSX.writeFile(wb, "Database_Segono.xlsx"); 
         }
 
-        // PERBAIKAN FUNGSI IMPORT EXCEL
         function importExcel(event) {
             const file = event.target.files[0];
             if(!file) return;
@@ -351,7 +379,6 @@
                     const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
 
                     if(jsonData.length > 0) {
-                        // Tambahkan ID unik jika tidak ada di Excel
                         const processedData = jsonData.map(item => {
                             if(!item.id) item.id = Date.now() + Math.random();
                             if(!item.status) item.status = "HIDUP";
@@ -368,13 +395,13 @@
                 } catch (err) {
                     Swal.fire('Error', 'Gagal membaca file. Pastikan formatnya .xlsx atau .xls', 'error');
                 }
-                event.target.value = ''; // Reset input file agar bisa pilih file yang sama lagi
+                event.target.value = ''; 
             };
             reader.readAsArrayBuffer(file);
         }
 
         function resetDB() {
-            Swal.fire({ title: 'Hapus Semua?', text: "Data hilang permanen!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Reset' }).then((result) => {
+            Swal.fire({ title: 'Hapus Semua Data?', text: "Tindakan ini tidak bisa dibatalkan!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Hapus Semua' }).then((result) => {
                 if (result.isConfirmed) { db = []; localStorage.setItem('segono_db', JSON.stringify(db)); render(); }
             });
         }
