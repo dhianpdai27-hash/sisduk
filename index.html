@@ -3,143 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Data Segono Official - Edit & Mutasi</title>
+    <title>Sistem Data Segono Official</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body { background: #f8fafc; color: #1e293b; font-family: 'Inter', sans-serif; }
-        .stat-card { background: white; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-left: 5px solid #3b82f6; }
-        .tab-button.active { border-bottom: 4px solid #1d4ed8; color: #1d4ed8; font-weight: 800; }
+        .stat-card { background: white; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-left: 5px solid #1e3a8a; }
+        .tab-button.active { border-bottom: 4px solid #1e3a8a; color: #1e3a8a; font-weight: 800; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.8); z-index: 1000; overflow-y: auto; padding: 15px; }
         .modal.active { display: flex; align-items: flex-start; justify-content: center; }
-        .kk-box { background: white; border: 1px solid #e2e8f0; border-radius: 15px; margin-bottom: 1.2rem; overflow: hidden; }
-        input, select { border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px; width: 100%; font-size: 0.9rem; }
-        .label-text { display: block; font-size: 0.7rem; font-weight: 800; color: #64748b; margin-bottom: 5px; text-transform: uppercase; }
-        #login-screen { position: fixed; inset: 0; background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .kk-box { background: white; border: 1px solid #e2e8f0; border-radius: 15px; margin-bottom: 1rem; overflow: hidden; }
+        input, select { border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px; width: 100%; font-size: 0.85rem; outline: none; margin-bottom: 5px; }
+        .label-text { display: block; font-size: 0.7rem; font-weight: 800; color: #64748b; margin: 5px 0 2px 2px; text-transform: uppercase; }
         .list-item-stat { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #e2e8f0; font-size: 0.85rem; }
+        .hidden-module { display: none; }
+        @media print { nav, .no-print, button, header { display: none !important; } .container { width: 100% !important; padding: 0 !important; } .stat-card { border: 1px solid #ccc !important; box-shadow: none !important; } }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
-        <div class="bg-white p-10 rounded-[2rem] shadow-2xl w-full max-w-sm mx-4 text-center">
-            <div class="text-5xl mb-4"></div>
-            <h2 class="text-2xl font-black mb-6 uppercase">Admin Login</h2>
-            <input type="password" id="input-pass" placeholder="����" class="mb-4 text-center text-3xl border-2 p-4 rounded-2xl w-full outline-none">
-            <button onclick="handleLogin()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black shadow-lg">MASUK SISTEM</button>
+        <div class="bg-white p-10 rounded-[2rem] shadow-2xl w-full max-w-sm mx-4 text-center mt-20">
+            <h2 class="text-2xl font-black mb-6 uppercase text-blue-900">Admin Login</h2>
+            <input type="password" id="input-pass" placeholder="••••" class="mb-4 text-center text-3xl border-2 p-4 rounded-2xl w-full text-blue-900 font-black">
+            <button onclick="handleLogin()" class="w-full bg-blue-800 text-white py-4 rounded-2xl font-black shadow-lg">MASUK</button>
         </div>
     </div>
 
     <div id="app-content" class="hidden">
-        <header class="bg-blue-800 text-white px-6 py-8 shadow-xl text-center">
+        <header class="bg-blue-900 text-white px-6 py-8 shadow-xl text-center no-print">
             <h1 class="text-2xl font-black uppercase tracking-tighter" id="head-dusun">Dusun Segono</h1>
-            <p class="text-xs opacity-80" id="head-alamat">Memuat data...</p>
+            <p class="text-[10px] opacity-75 mt-1" id="head-alamat">Memuat Alamat...</p>
         </header>
 
-        <nav class="bg-white shadow-md flex justify-around sticky top-0 z-50">
-            <button class="tab-button active py-5 px-4 text-xs font-black uppercase" data-tab="dashboard"> Beranda</button>
-            <button class="tab-button py-5 px-4 text-xs font-black uppercase" data-tab="penduduk"> Data Warga</button>
-            <button class="tab-button py-5 px-4 text-xs font-black uppercase" data-tab="pengaturan"> Panel</button>
+        <nav class="bg-white shadow-md flex justify-around sticky top-0 z-50 no-print">
+            <button class="tab-button active py-5 px-4 text-[10px] font-black uppercase" data-tab="dashboard">Beranda</button>
+            <button class="tab-button py-5 px-4 text-[10px] font-black uppercase" data-tab="penduduk">Warga</button>
+            <button class="tab-button py-5 px-4 text-[10px] font-black uppercase" data-tab="pengaturan">Panel</button>
         </nav>
 
         <main class="container mx-auto p-4 pb-24">
+            
             <div id="tab-dashboard" class="tab-content">
                 <div class="grid grid-cols-2 gap-4 mb-6">
-                    <div class="stat-card p-5 border-l-blue-600"><p class="label-text">Warga Aktif</p><h3 id="st-total" class="text-3xl font-black">0</h3></div>
-                    <div class="stat-card p-5 border-l-orange-500"><p class="label-text">Total KK</p><h3 id="st-kk" class="text-3xl font-black">0</h3></div>
-                    <div class="stat-card p-5 border-l-emerald-500"><p class="label-text">Laki-Laki</p><h3 id="st-laki" class="text-3xl font-black">0</h3></div>
-                    <div class="stat-card p-5 border-l-rose-500"><p class="label-text">Perempuan</p><h3 id="st-perempuan" class="text-3xl font-black">0</h3></div>
+                    <div class="stat-card p-5"><p class="text-[9px] font-bold text-gray-400 uppercase">Warga Aktif</p><h3 id="st-total" class="text-3xl font-black text-blue-900">0</h3></div>
+                    <div class="stat-card p-5" style="border-left-color: #f97316;"><p class="text-[9px] font-bold text-gray-400 uppercase">Total KK</p><h3 id="st-kk" class="text-3xl font-black text-orange-600">0</h3></div>
+                    <div class="stat-card p-5" style="border-left-color: #10b981;"><p class="text-[9px] font-bold text-gray-400 uppercase">Laki-Laki</p><h3 id="st-laki" class="text-3xl font-black text-emerald-600">0</h3></div>
+                    <div class="stat-card p-5" style="border-left-color: #f43f5e;"><p class="text-[9px] font-bold text-gray-400 uppercase">Perempuan</p><h3 id="st-perempuan" class="text-3xl font-black text-rose-600">0</h3></div>
                 </div>
 
-                <div class="bg-white p-5 rounded-3xl shadow-sm border border-red-100 mb-6">
-                    <h2 class="text-red-700 font-black text-[10px] uppercase mb-4 tracking-widest flex items-center gap-2">
-                        <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span> Laporan Mutasi (Bulan Ini)
-                    </h2>
-                    <div class="grid grid-cols-3 gap-2 text-center">
-                        <div class="bg-blue-50 p-3 rounded-xl"><p class="text-[9px] font-bold text-blue-600 uppercase">Lahir</p><h4 id="mu-lahir" class="text-xl font-black">0</h4></div>
-                        <div class="bg-gray-100 p-3 rounded-xl"><p class="text-[9px] font-bold text-gray-600 uppercase">Meninggal</p><h4 id="mu-mati" class="text-xl font-black">0</h4></div>
-                        <div class="bg-orange-50 p-3 rounded-xl"><p class="text-[9px] font-bold text-orange-600 uppercase">Pindah</p><h4 id="mu-pindah" class="text-xl font-black">0</h4></div>
+                <div id="box-mutasi" class="bg-white p-5 rounded-2xl shadow-sm border mb-4">
+                    <div class="flex justify-between items-center mb-4 border-b pb-2">
+                        <h2 class="text-blue-900 font-black text-[10px] uppercase">Laporan Mutasi Bulan Ini</h2>
+                        <button onclick="window.print()" class="text-[9px] font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded no-print">PRINT</button>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 text-center font-black">
+                        <div><p class="text-[9px] text-blue-500 uppercase">Lahir</p><span id="mu-lahir">0</span></div>
+                        <div class="border-x"><p class="text-[9px] text-rose-500 uppercase">Mati</p><span id="mu-mati">0</span></div>
+                        <div><p class="text-[9px] text-orange-500 uppercase">Pindah</p><span id="mu-pindah">0</span></div>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 mb-6">
-                    <h2 class="text-blue-800 font-black text-xs uppercase mb-4 tracking-widest border-b pb-2"> Rincian Pendidikan & Pekerjaan</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div><p class="label-text text-blue-600 mb-3">Tingkat Pendidikan</p><div id="stat-list-pendidikan" class="space-y-1"></div></div>
-                        <div><p class="label-text text-emerald-600 mb-3">Jenis Pekerjaan</p><div id="stat-list-pekerjaan" class="space-y-1"></div></div>
-                    </div>
+                <div id="box-pendidikan" class="bg-white p-5 rounded-2xl shadow-sm border mb-4 hidden-module">
+                    <h2 class="text-blue-900 font-black text-[10px] uppercase mb-4 border-b pb-1 font-bold">Pendidikan</h2>
+                    <div id="list-edu" class="space-y-1"></div>
+                </div>
+                <div id="box-pekerjaan" class="bg-white p-5 rounded-2xl shadow-sm border mb-4 hidden-module">
+                    <h2 class="text-emerald-700 font-black text-[10px] uppercase mb-4 border-b pb-1 font-bold">Pekerjaan</h2>
+                    <div id="list-job" class="space-y-1"></div>
+                </div>
+                <div id="box-usia" class="bg-white p-5 rounded-2xl shadow-sm border mb-4 hidden-module">
+                    <h2 class="text-orange-700 font-black text-[10px] uppercase mb-4 border-b pb-1 font-bold">Kelompok Usia</h2>
+                    <div id="list-usia" class="space-y-1"></div>
+                </div>
+                <div id="box-agama" class="bg-white p-5 rounded-2xl shadow-sm border mb-4 hidden-module">
+                    <h2 class="text-purple-700 font-black text-[10px] uppercase mb-4 border-b pb-1 font-bold">Agama</h2>
+                    <div id="list-agama" class="space-y-1"></div>
+                </div>
+                <div id="box-goldarah" class="bg-white p-5 rounded-2xl shadow-sm border mb-4 hidden-module">
+                    <h2 class="text-red-700 font-black text-[10px] uppercase mb-4 border-b pb-1 font-bold">Golongan Darah</h2>
+                    <div id="list-goldarah" class="space-y-1"></div>
                 </div>
 
-                <button onclick="openForm()" class="w-full bg-blue-700 text-white py-5 rounded-2xl font-black shadow-xl uppercase text-sm">+ Tambah Warga Baru</button>
+                <button onclick="openForm()" class="w-full bg-blue-800 text-white py-5 rounded-2xl font-black shadow-xl uppercase text-sm no-print">+ Tambah Warga Baru</button>
             </div>
 
             <div id="tab-penduduk" class="tab-content hidden">
-                <div class="bg-white p-4 rounded-xl shadow-sm border mb-4 grid grid-cols-2 gap-3">
-                    <div class="col-span-2"><label class="label-text">Pencarian</label><input type="text" id="cari" placeholder="Nama / NIK..." onkeyup="render()"></div>
-                    <div><label class="label-text">RT</label><input type="text" id="filter-rt" placeholder="RT" onkeyup="render()"></div>
-                    <div><label class="label-text">RW</label><input type="text" id="filter-rw" placeholder="RW" onkeyup="render()"></div>
+                <div class="bg-white p-4 rounded-xl shadow-sm mb-4 no-print">
+                    <input type="text" id="cari" placeholder="Cari Nama/NIK/No. KK..." onkeyup="render()">
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <input type="text" id="filter-rt" placeholder="RT" onkeyup="render()">
+                        <input type="text" id="filter-rw" placeholder="RW" onkeyup="render()">
+                    </div>
                 </div>
                 <div id="list-kk"></div>
             </div>
 
             <div id="tab-pengaturan" class="tab-content hidden">
-                <div class="bg-white p-6 rounded-2xl border mb-6 shadow-sm">
-                    <h2 class="font-black mb-4 text-blue-900 uppercase text-xs">Identitas Wilayah</h2>
-                    <div class="space-y-3">
-                        <input type="text" id="set-dusun" placeholder="Dusun">
-                        <input type="text" id="set-desa" placeholder="Desa">
-                        <input type="text" id="set-kec" placeholder="Kecamatan">
-                        <input type="text" id="set-kab" placeholder="Kabupaten">
-                        <input type="text" id="set-prov" placeholder="Provinsi">
-                        <input type="text" id="set-pass" placeholder="Password Admin">
-                        <button onclick="saveSettings()" class="w-full bg-blue-800 text-white py-3 rounded-xl font-bold uppercase text-[10px]">Simpan Identitas</button>
+                <div class="bg-white p-6 rounded-2xl border mb-6 no-print">
+                    <h2 class="font-black mb-4 text-blue-900 uppercase text-xs">Identitas & Wilayah</h2>
+                    <input type="text" id="set-dusun" placeholder="Dusun">
+                    <input type="text" id="set-desa" placeholder="Desa">
+                    <input type="text" id="set-kec" placeholder="Kecamatan">
+                    <input type="text" id="set-kab" placeholder="Kabupaten">
+                    <input type="text" id="set-prov" placeholder="Provinsi">
+                    <input type="text" id="set-pass" placeholder="Password Admin">
+                    <button onclick="saveSettings()" class="w-full bg-blue-800 text-white py-3 rounded-xl font-bold uppercase text-[10px] mt-2">Simpan Pengaturan</button>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border mb-6 no-print">
+                    <h2 class="font-black mb-4 text-blue-900 uppercase text-xs">Pilihan Dashboard</h2>
+                    <div class="grid grid-cols-1 gap-3">
+                        <label class="flex items-center gap-3 text-xs font-bold uppercase"><input type="checkbox" id="f-edu" onchange="toggleView()"> Pendidikan</label>
+                        <label class="flex items-center gap-3 text-xs font-bold uppercase"><input type="checkbox" id="f-job" onchange="toggleView()"> Pekerjaan</label>
+                        <label class="flex items-center gap-3 text-xs font-bold uppercase"><input type="checkbox" id="f-usia" onchange="toggleView()"> Usia</label>
+                        <label class="flex items-center gap-3 text-xs font-bold uppercase"><input type="checkbox" id="f-agama" onchange="toggleView()"> Agama</label>
+                        <label class="flex items-center gap-3 text-xs font-bold uppercase"><input type="checkbox" id="f-goldarah" onchange="toggleView()"> Golongan Darah</label>
                     </div>
                 </div>
-                <div class="bg-white p-6 rounded-2xl border mb-6 shadow-sm">
-                    <h2 class="font-black mb-4 text-green-700 uppercase text-xs">Database Excel</h2>
-                    <input type="file" id="import-excel" accept=".xlsx, .xls" class="mb-3 text-xs">
-                    <button onclick="importData()" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold mb-2 uppercase text-xs">Import Excel</button>
-                    <button onclick="exportExcel()" class="w-full bg-slate-700 text-white py-3 rounded-xl font-bold mb-2 uppercase text-xs">Export Semua Data</button>
-                    <button onclick="resetDB()" class="w-full bg-red-50 text-red-600 py-3 rounded-xl font-bold uppercase text-xs">Reset Data</button>
+
+                <div class="bg-white p-6 rounded-2xl border no-print space-y-3">
+                    <h2 class="font-black text-blue-900 uppercase text-xs mb-2 tracking-widest">Database (Excel)</h2>
+                    <button onclick="exportExcel()" class="w-full bg-emerald-700 text-white py-3 rounded-xl font-bold uppercase text-[10px]">Export Ke Excel</button>
+                    <button onclick="document.getElementById('importFile').click()" class="w-full bg-amber-600 text-white py-3 rounded-xl font-bold uppercase text-[10px]">Import Dari Excel</button>
+                    <input type="file" id="importFile" class="hidden" accept=".xlsx, .xls" onchange="importExcel(event)">
+                    <button onclick="resetDB()" class="w-full bg-rose-50 text-rose-600 py-3 rounded-xl font-bold uppercase text-[10px]">Reset Seluruh Data</button>
                 </div>
             </div>
         </main>
 
-        <div id="modal-form" class="modal">
-            <div class="bg-white w-full max-w-5xl rounded-[2.5rem] overflow-hidden my-4 shadow-2xl">
-                <div class="bg-blue-800 p-6 text-white flex justify-between items-center">
-                    <h2 id="modal-title" class="font-black uppercase text-xs tracking-widest">Entri Data Penduduk</h2>
+        <div id="modal-form" class="modal no-print">
+            <div class="bg-white w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl my-4">
+                <div class="bg-blue-800 p-5 text-white flex justify-between items-center">
+                    <h2 id="modal-title" class="font-black uppercase text-xs">Entri Biodata Penduduk</h2>
                     <button onclick="closeForm()" class="text-3xl">&times;</button>
                 </div>
-                <form id="form-data" class="p-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <form id="form-data" class="p-6 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1 overflow-y-auto max-h-[80vh]">
                     <input type="hidden" name="id" id="form-id">
-                    <div class="md:col-span-3 border-b font-black text-[10px] text-blue-700 uppercase">I. Data Kartu Keluarga</div>
-                    <input type="text" name="noKK" placeholder="No. KK" required>
-                    <input type="text" name="namaKepala" placeholder="Kepala Keluarga" required>
-                    <input type="text" name="alamat" placeholder="Alamat">
-                    <input type="text" name="rt" placeholder="RT" required>
-                    <input type="text" name="rw" placeholder="RW" required>
-                    
-                    <div class="md:col-span-3 border-b font-black text-[10px] text-blue-700 uppercase mt-4">II. Data Pribadi & Status Mutasi</div>
-                    <input type="text" name="nik" placeholder="NIK" required>
-                    <input type="text" name="nama" placeholder="Nama Lengkap" required>
-                    <select name="jk"><option value="L">Laki-Laki</option><option value="P">Perempuan</option></select>
-                    <input type="text" name="tempatLahir" placeholder="Tempat Lahir">
-                    <input type="date" name="tglLahir">
-                    <select name="status">
-                        <option value="HIDUP">STATUS: HIDUP (AKTIF)</option>
-                        <option value="LAHIR">STATUS: LAHIR (AKTIF)</option>
-                        <option value="MENINGGAL">STATUS: MENINGGAL (ARSIP)</option>
-                        <option value="PINDAH">STATUS: PINDAH (ARSIP)</option>
-                    </select>
-                    <input type="text" name="pendidikan" placeholder="Pendidikan">
-                    <input type="text" name="pekerjaan" placeholder="Pekerjaan">
-                    <input type="text" name="hubungan" placeholder="Hubungan">
-                    <input type="text" name="ayah" placeholder="Ayah">
-                    <input type="text" name="ibu" placeholder="Ibu">
+                    <div class="md:col-span-2 text-blue-800 font-black text-[10px] border-b-2 border-blue-50 pb-1 mb-2">I. DATA KARTU KELUARGA</div>
+                    <div><label class="label-text">Nomor KK</label><input type="text" name="noKK" required></div>
+                    <div><label class="label-text">Nama Kepala Keluarga</label><input type="text" name="namaKepala" required></div>
+                    <div class="md:col-span-2"><label class="label-text">Alamat Lengkap</label><input type="text" name="alamat" required></div>
+                    <div class="grid grid-cols-2 gap-2 md:col-span-2">
+                        <div><label class="label-text">RT</label><input type="text" name="rt" required></div>
+                        <div><label class="label-text">RW</label><input type="text" name="rw" required></div>
+                    </div>
+                    <div class="md:col-span-2 text-blue-800 font-black text-[10px] border-b-2 border-blue-50 pb-1 mt-4 mb-2 uppercase">II. DATA INDIVIDU</div>
+                    <div><label class="label-text">NIK</label><input type="text" name="nik" required></div>
+                    <div><label class="label-text">Nama Lengkap</label><input type="text" name="nama" required></div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label class="label-text">Jenis Kelamin</label><select name="jk"><option value="L">Laki-Laki</option><option value="P">Perempuan</option></select></div>
+                        <div><label class="label-text">Hubungan Keluarga</label><input type="text" name="hubungan"></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label class="label-text">Tempat Lahir</label><input type="text" name="tempatLahir"></div>
+                        <div><label class="label-text">Tanggal Lahir</label><input type="date" name="tglLahir"></div>
+                    </div>
+                    <div><label class="label-text">Agama</label><select name="agama"><option>Islam</option><option>Kristen</option><option>Katolik</option><option>Hindu</option><option>Budha</option><option>Lainnya</option></select></div>
+                    <div><label class="label-text">Status Kawin</label><select name="statusKawin"><option>Belum Kawin</option><option>Kawin</option><option>Cerai Hidup</option><option>Cerai Mati</option></select></div>
+                    <div><label class="label-text">Pendidikan</label><input type="text" name="pendidikan"></div>
+                    <div><label class="label-text">Pekerjaan</label><input type="text" name="pekerjaan"></div>
+                    <div><label class="label-text">Gol. Darah</label><input type="text" name="goldarah" placeholder="-"></div>
+                    <div><label class="label-text">Status Keberadaan</label><select name="status"><option value="HIDUP">HIDUP</option><option value="LAHIR">LAHIR</option><option value="MENINGGAL">MENINGGAL</option><option value="PINDAH">PINDAH</option></select></div>
+                    <div class="grid grid-cols-2 gap-2 md:col-span-2">
+                        <div><label class="label-text">Ayah</label><input type="text" name="ayah"></div>
+                        <div><label class="label-text">Ibu</label><input type="text" name="ibu"></div>
+                    </div>
                     <input type="hidden" name="tglUpdate" id="tglUpdate">
-                    <button type="submit" id="btn-submit" class="md:col-span-3 bg-blue-700 text-white py-5 rounded-2xl font-black uppercase shadow-lg">Simpan Data</button>
+                    <button type="submit" class="md:col-span-2 w-full bg-blue-800 text-white py-4 rounded-xl font-black uppercase shadow-lg mt-6">Simpan Perubahan</button>
                 </form>
             </div>
         </div>
@@ -147,7 +179,7 @@
 
     <script>
         let db = JSON.parse(localStorage.getItem('segono_db')) || [];
-        let config = JSON.parse(localStorage.getItem('segono_cfg')) || { pass: "1234", dusun: "Segono", desa: "Segono", kec: "-", kab: "-", prov: "-" };
+        let config = JSON.parse(localStorage.getItem('segono_cfg')) || { pass: "1234", dusun: "Segono", desa: "Desa", kec:"Kecamatan", kab:"Kabupaten", prov: "Provinsi", show: ["f-edu"] };
 
         function handleLogin() {
             if(document.getElementById('input-pass').value === config.pass) {
@@ -163,102 +195,55 @@
             document.getElementById('set-desa').value = config.desa;
             document.getElementById('set-kec').value = config.kec;
             document.getElementById('set-kab').value = config.kab;
-            document.getElementById('set-prov').value = config.prov;
-            refreshUI(); render();
-        }
-
-        function saveSettings() {
-            config = {
-                pass: document.getElementById('set-pass').value,
-                dusun: document.getElementById('set-dusun').value,
-                desa: document.getElementById('set-desa').value,
-                kec: document.getElementById('set-kec').value,
-                kab: document.getElementById('set-kab').value,
-                prov: document.getElementById('set-prov').value
-            };
-            localStorage.setItem('segono_cfg', JSON.stringify(config));
-            refreshUI(); Swal.fire('Berhasil', 'Pengaturan Disimpan', 'success');
+            document.getElementById('set-prov').value = config.prov || "Provinsi";
+            (config.show || []).forEach(id => { if(document.getElementById(id)) document.getElementById(id).checked = true; });
+            refreshUI(); toggleView(); render();
         }
 
         function refreshUI() {
             document.getElementById('head-dusun').innerText = "Dusun " + config.dusun;
-            document.getElementById('head-alamat').innerText = `Desa ${config.desa}, Kec. ${config.kec}, Kab. ${config.kab}, Prov. ${config.prov}`;
+            document.getElementById('head-alamat').innerText = `Desa ${config.desa}, Kec. ${config.kec}, Kab. ${config.kab}, ${config.prov}`;
         }
 
-        function importData() {
-            const f = document.getElementById('import-excel').files[0];
-            if(!f) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const workbook = XLSX.read(new Uint8Array(e.target.result), {type: 'array'});
-                const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-                const now = new Date().toISOString().split('T')[0];
-                db = [...db, ...json.map(x => ({
-                    ...x, 
-                    id: x.id || Date.now() + Math.random(), 
-                    status: (x.status || 'HIDUP').toUpperCase(),
-                    tglUpdate: x.tglUpdate || now
-                }))];
-                localStorage.setItem('segono_db', JSON.stringify(db));
-                render(); Swal.fire('Import Berhasil!', '', 'success');
-            };
-            reader.readAsArrayBuffer(f);
+        function saveSettings() {
+            config.pass = document.getElementById('set-pass').value;
+            config.dusun = document.getElementById('set-dusun').value;
+            config.desa = document.getElementById('set-desa').value;
+            config.kec = document.getElementById('set-kec').value;
+            config.kab = document.getElementById('set-kab').value;
+            config.prov = document.getElementById('set-prov').value;
+            localStorage.setItem('segono_cfg', JSON.stringify(config));
+            refreshUI(); Swal.fire('Berhasil', 'Identitas Disimpan', 'success');
         }
 
-        document.querySelectorAll('.tab-button').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-                btn.classList.add('active');
-                document.getElementById(`tab-${btn.dataset.tab}`).classList.remove('hidden');
-                render();
-            });
-        });
-
-        function openForm() { 
-            document.getElementById('modal-title').innerText = "Entri Data Penduduk";
-            document.getElementById('form-id').value = "";
-            document.getElementById('btn-submit').innerText = "SIMPAN WARGA BARU";
-            document.getElementById('modal-form').classList.add('active'); 
-        }
-
-        function closeForm() { 
-            document.getElementById('modal-form').classList.remove('active'); 
-            document.getElementById('form-data').reset(); 
-        }
-
-        function editWarga(id) {
-            const data = db.find(x => x.id == id);
-            if(data) {
-                const form = document.getElementById('form-data');
-                for (let key in data) {
-                    if(form.elements[key]) form.elements[key].value = data[key];
+        function toggleView() {
+            const boxes = { "f-edu": "box-pendidikan", "f-job": "box-pekerjaan", "f-usia": "box-usia", "f-agama": "box-agama", "f-goldarah": "box-goldarah" };
+            const active = [];
+            for (let id in boxes) {
+                if(document.getElementById(id).checked) { 
+                    document.getElementById(boxes[id]).classList.remove('hidden-module'); active.push(id); 
+                } else { 
+                    document.getElementById(boxes[id]).classList.add('hidden-module'); 
                 }
-                document.getElementById('modal-title').innerText = "Edit Data: " + data.nama;
-                document.getElementById('btn-submit').innerText = "SIMPAN PERUBAHAN";
-                document.getElementById('modal-form').classList.add('active');
             }
+            config.show = active;
+            localStorage.setItem('segono_cfg', JSON.stringify(config));
         }
 
         document.getElementById('form-data').onsubmit = function(e) {
             e.preventDefault();
             const formData = Object.fromEntries(new FormData(e.target));
             const now = new Date().toISOString().split('T')[0];
-            
             if(formData.id) {
-                // Proses Update
                 const idx = db.findIndex(x => x.id == formData.id);
                 db[idx] = {...db[idx], ...formData, tglUpdate: now};
             } else {
-                // Proses Baru
                 formData.id = Date.now();
                 formData.tglUpdate = now;
                 db.push(formData);
             }
-            
             localStorage.setItem('segono_db', JSON.stringify(db));
-            render(); closeForm(); 
-            Swal.fire('Berhasil!', 'Data telah diperbarui.', 'success');
+            render(); closeForm(); Swal.fire('Tersimpan!', '', 'success');
         };
 
         function render() {
@@ -272,97 +257,137 @@
             document.getElementById('st-laki').innerText = aktif.filter(x => x.jk === 'L').length;
             document.getElementById('st-perempuan').innerText = aktif.filter(x => x.jk === 'P').length;
 
-            const mutasiBulanIni = db.filter(x => (x.tglUpdate || "").startsWith(curMonth));
-            document.getElementById('mu-lahir').innerText = mutasiBulanIni.filter(x => x.status === 'LAHIR').length;
-            document.getElementById('mu-mati').innerText = mutasiBulanIni.filter(x => x.status === 'MENINGGAL').length;
-            document.getElementById('mu-pindah').innerText = mutasiBulanIni.filter(x => x.status === 'PINDAH').length;
+            const mutasi = db.filter(x => (x.tglUpdate || "").startsWith(curMonth));
+            document.getElementById('mu-lahir').innerText = mutasi.filter(x => x.status === 'LAHIR').length;
+            document.getElementById('mu-mati').innerText = mutasi.filter(x => x.status === 'MENINGGAL').length;
+            document.getElementById('mu-pindah').innerText = mutasi.filter(x => x.status === 'PINDAH').length;
 
-            const eduStat = {}; const jobStat = {};
+            const edu = {}; const job = {}; const agm = {}; const bld = {}; let uBalita=0, uAnak=0, uProd=0, uLansia=0;
+            const nowY = new Date().getFullYear();
+            
             aktif.forEach(x => {
-                let edu = (x.pendidikan || "TIDAK SEKOLAH").toUpperCase();
-                let job = (x.pekerjaan || "TIDAK BEKERJA").toUpperCase();
-                eduStat[edu] = (eduStat[edu] || 0) + 1;
-                jobStat[job] = (jobStat[job] || 0) + 1;
+                let e = (x.pendidikan || "TIDAK ADA").toUpperCase();
+                let j = (x.pekerjaan || "TIDAK ADA").toUpperCase();
+                let a = (x.agama || "TIDAK ADA").toUpperCase();
+                let b = (x.goldarah || "-").toUpperCase();
+                edu[e] = (edu[e] || 0) + 1; job[j] = (job[j] || 0) + 1; agm[a] = (agm[a] || 0) + 1; bld[b] = (bld[b] || 0) + 1;
+                if(x.tglLahir) {
+                    const usia = nowY - new Date(x.tglLahir).getFullYear();
+                    if(usia <= 5) uBalita++; else if(usia <= 17) uAnak++; else if(usia <= 55) uProd++; else uLansia++;
+                }
             });
-            document.getElementById('stat-list-pendidikan').innerHTML = Object.keys(eduStat).map(k => `<div class="list-item-stat"><span>${k}</span><span class="font-black">${eduStat[k]}</span></div>`).join('');
-            document.getElementById('stat-list-pekerjaan').innerHTML = Object.keys(jobStat).map(k => `<div class="list-item-stat"><span>${k}</span><span class="font-black text-emerald-600">${jobStat[k]}</span></div>`).join('');
+            
+            document.getElementById('list-edu').innerHTML = Object.keys(edu).map(k => `<div class="list-item-stat"><span>${k}</span><b>${edu[k]}</b></div>`).join('');
+            document.getElementById('list-job').innerHTML = Object.keys(job).map(k => `<div class="list-item-stat"><span>${k}</span><b>${job[k]}</b></div>`).join('');
+            document.getElementById('list-agama').innerHTML = Object.keys(agm).map(k => `<div class="list-item-stat"><span>${k}</span><b>${agm[k]}</b></div>`).join('');
+            document.getElementById('list-goldarah').innerHTML = Object.keys(bld).map(k => `<div class="list-item-stat"><span>${k}</span><b>${bld[k]}</b></div>`).join('');
+            document.getElementById('list-usia').innerHTML = `<div class="list-item-stat"><span>Balita</span><b>${uBalita}</b></div><div class="list-item-stat"><span>Anak/Remaja</span><b>${uAnak}</b></div><div class="list-item-stat"><span>Produktif</span><b>${uProd}</b></div><div class="list-item-stat"><span>Lansia</span><b>${uLansia}</b></div>`;
 
             const filtered = aktif.filter(x => {
-                const matchQ = (x.nama||"").toLowerCase().includes(q) || (x.nik||"").includes(q);
-                const matchRT = rt ? x.rt == rt : true;
-                const matchRW = rw ? x.rw == rw : true;
-                return matchQ && matchRT && matchRW;
+                const mQ = (x.nama||"").toLowerCase().includes(q) || (x.nik||"").includes(q) || (x.noKK||"").includes(q);
+                const mRT = rt ? x.rt == rt : true; const mRW = rw ? x.rw == rw : true;
+                return mQ && mRT && mRW;
             });
 
-            const groups = {};
-            filtered.forEach(p => { if(!groups[p.noKK]) groups[p.noKK] = []; groups[p.noKK].push(p); });
+            const groups = {}; filtered.forEach(p => { if(!groups[p.noKK]) groups[p.noKK] = []; groups[p.noKK].push(p); });
             document.getElementById('st-kk').innerText = Object.keys(groups).length;
 
             const list = document.getElementById('list-kk');
             list.innerHTML = '';
             for(let kk in groups) {
                 const h = groups[kk][0];
-                list.innerHTML += `
-                    <div class="kk-box">
-                        <div class="bg-blue-50 p-4 border-b text-[10px] font-black uppercase flex justify-between items-center">
-                            <span> ${h.namaKepala} (RT ${h.rt}/RW ${h.rw})</span>
-                            <button onclick="ubahStatusKK('${kk}')" class="text-blue-500 bg-white px-2 py-1 rounded border border-blue-200 text-[8px]">MUTASI 1 KK</button>
+                list.innerHTML += `<div class="kk-box shadow-sm">
+                    <div class="bg-blue-50 p-4 border-b flex justify-between items-center text-[10px] font-black uppercase text-blue-900">
+                        <span>🏠 ${h.namaKepala} (RT ${h.rt}/RW ${h.rw})</span>
+                        <button onclick="editWarga('${h.id}')" class="text-blue-600 no-print font-bold">EDIT</button>
+                    </div>
+                    <div class="p-1">${groups[kk].map(m => `<div class="flex justify-between items-center p-3 border-b last:border-0 text-xs">
+                        <span><b>${m.nama}</b> <small class="text-gray-400">(${m.hubungan})</small></span>
+                        <div class="flex gap-4 no-print">
+                            <button onclick="editWarga('${m.id}')" class="text-blue-500 font-bold">✏️</button>
+                            <button onclick="mutasiIndividu('${m.id}')" class="text-gray-300 font-bold">⚙️</button>
                         </div>
-                        <div class="p-1">${groups[kk].map(m => `<div class="p-3 border-b text-[10px] flex justify-between items-center">
-                            <span class="flex-1"><b>${m.nama}</b> (${m.hubungan})</span> 
-                            <div class="flex gap-4">
-                                <button onclick="editWarga('${m.id}')" class="text-blue-500 font-bold"> Edit</button>
-                                <button onclick="ubahStatusIndividu('${m.id}')" class="text-gray-400"> Mutasi</button>
-                            </div>
-                        </div>`).join('')}</div>
-                    </div>`;
+                    </div>`).join('')}</div>
+                </div>`;
             }
         }
 
-        async function ubahStatusIndividu(id) {
-            const { value: status } = await Swal.fire({
-                title: 'Ubah Status Warga',
-                input: 'select',
-                inputOptions: { 'HIDUP': 'Hidup', 'MENINGGAL': 'Meninggal', 'PINDAH': 'Pindah' },
-                showCancelButton: true
-            });
-            if (status) {
-                const idx = db.findIndex(x => x.id == id);
-                db[idx].status = status;
-                db[idx].tglUpdate = new Date().toISOString().split('T')[0];
-                localStorage.setItem('segono_db', JSON.stringify(db));
-                render();
-                Swal.fire('Terarsip', 'Status berhasil diperbarui', 'success');
+        async function mutasiIndividu(id) {
+            const { value: s } = await Swal.fire({ title: 'Mutasi', input: 'select', inputOptions: { 'HIDUP':'Hidup', 'MENINGGAL':'Meninggal', 'PINDAH':'Pindah' }, showCancelButton: true });
+            if (s) { const i = db.findIndex(x => x.id == id); db[i].status = s; db[i].tglUpdate = new Date().toISOString().split('T')[0]; localStorage.setItem('segono_db', JSON.stringify(db)); render(); }
+        }
+
+        function editWarga(id) {
+            const data = db.find(x => x.id == id);
+            if(data) {
+                const form = document.getElementById('form-data');
+                for (let key in data) { if(form.elements[key]) form.elements[key].value = data[key]; }
+                document.getElementById('modal-title').innerText = "Edit Biodata";
+                document.getElementById('modal-form').classList.add('active');
             }
         }
 
-        async function ubahStatusKK(noKK) {
-            const { value: status } = await Swal.fire({
-                title: 'Mutasi Satu Keluarga',
-                input: 'select',
-                inputOptions: { 'PINDAH': 'Pindah Domisili', 'MENINGGAL': 'Meninggal (Seluruhnya)' },
-                showCancelButton: true
-            });
-            if (status) {
-                db.forEach((x, idx) => {
-                    if(x.noKK === noKK) {
-                        db[idx].status = status;
-                        db[idx].tglUpdate = new Date().toISOString().split('T')[0];
-                    }
-                });
-                localStorage.setItem('segono_db', JSON.stringify(db));
-                render();
-                Swal.fire('Berhasil', 'Seluruh keluarga telah dimutasi', 'success');
-            }
-        }
-
-        function resetDB() { if(confirm('Hapus selamanya?')) { db = []; localStorage.setItem('segono_db', JSON.stringify(db)); render(); } }
-        function exportExcel() {
+        function openForm() { document.getElementById('modal-title').innerText = "Entri Biodata Lengkap"; document.getElementById('form-id').value = ""; document.getElementById('modal-form').classList.add('active'); }
+        function closeForm() { document.getElementById('modal-form').classList.remove('active'); document.getElementById('form-data').reset(); }
+        
+        function exportExcel() { 
             const ws = XLSX.utils.json_to_sheet(db);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Data_Lengkap");
-            XLSX.writeFile(wb, `Database_Segono_Lengkap.xlsx`);
+            XLSX.utils.book_append_sheet(wb, ws, "Data_Warga");
+            XLSX.writeFile(wb, "Database_Segono.xlsx"); 
         }
+
+        // PERBAIKAN FUNGSI IMPORT EXCEL
+        function importExcel(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    const firstSheet = workbook.SheetNames[0];
+                    const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
+
+                    if(jsonData.length > 0) {
+                        // Tambahkan ID unik jika tidak ada di Excel
+                        const processedData = jsonData.map(item => {
+                            if(!item.id) item.id = Date.now() + Math.random();
+                            if(!item.status) item.status = "HIDUP";
+                            return item;
+                        });
+
+                        db = processedData;
+                        localStorage.setItem('segono_db', JSON.stringify(db));
+                        render();
+                        Swal.fire('Berhasil!', jsonData.length + ' data warga berhasil dimasukkan.', 'success');
+                    } else {
+                        Swal.fire('Gagal', 'File Excel kosong atau tidak terbaca.', 'error');
+                    }
+                } catch (err) {
+                    Swal.fire('Error', 'Gagal membaca file. Pastikan formatnya .xlsx atau .xls', 'error');
+                }
+                event.target.value = ''; // Reset input file agar bisa pilih file yang sama lagi
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function resetDB() {
+            Swal.fire({ title: 'Hapus Semua?', text: "Data hilang permanen!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Reset' }).then((result) => {
+                if (result.isConfirmed) { db = []; localStorage.setItem('segono_db', JSON.stringify(db)); render(); }
+            });
+        }
+        
+        document.querySelectorAll('.tab-button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+                btn.classList.add('active');
+                document.getElementById(`tab-${btn.dataset.tab}`).classList.remove('hidden');
+                render();
+            });
+        });
     </script>
 </body>
 </html>
